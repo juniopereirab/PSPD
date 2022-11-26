@@ -5,24 +5,59 @@
  */
 
 #include "contador.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <float.h>
+#include <math.h>
+#include <string.h>
 
+struct worker_args {
+	char * host;
+	params parametros;
+} typedef Worker;
+
+result res = {0, 0};
+
+char * ler_arquivo(char * nome){
+	FILE *file;
+
+	file = fopen(nome, "r");
+	if (file == NULL) return NULL;
+	fseek(file, 0, SEEK_END);
+	int length = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	char *string = malloc(sizeof(char) * (length+1));
+	char c;
+
+	int i = 0;
+
+	fread(string, sizeof(char), length, file);
+
+	fclose(file);
+	return string;
+}
 
 void
-prog_100(host)
+prog_100(host, args)
 char *host;
+params args;
 {
 	CLIENT *clnt;
 	result  *result_1;
-	params  get_words_quantity_100_arg;
 	clnt = clnt_create(host, PROG, VERSAO, "udp");
 	if (clnt == NULL) {
 		clnt_pcreateerror(host);
 		exit(1);
 	}
-	result_1 = get_words_quantity_100(&get_words_quantity_100_arg, clnt);
+	result_1 = get_words_quantity_100(&args, clnt);
 	if (result_1 == NULL) {
 		clnt_perror(clnt, "call failed:");
 	}
+	printf("Ocorrencias da palavra: %d, Numero total de palavras no arquivo: %d \n", result_1->ocorrencias, result_1->cont);
 	clnt_destroy( clnt );
 }
 
@@ -32,11 +67,31 @@ int argc;
 char *argv[];
 {
 	char *host;
+	char nome_arquivo[50];
+	char palavra[50];
+	Worker worker;
+
+	printf("Qual arquivo será contado?\nNome: ");
+	scanf("%s", nome_arquivo);
+
+	printf("Qual palavra você quer verificar ocorrência?\nPalavra: ");
+	scanf("%s", palavra);
+
+	char * texto = ler_arquivo(nome_arquivo);
+	int tamanho_texto = strlen(texto);
+	int tamanho_palavra = strlen(palavra);
 
 	if(argc < 2) {
 		printf("usage: %s server_host\n", argv[0]);
 		exit(1);
 	}
 	host = argv[1];
-	prog_100( host );
+
+	worker.host = host;
+	worker.parametros.dados.dados_val = texto;
+	worker.parametros.dados.dados_len = tamanho_texto;
+	worker.parametros.palavras.palavras_val = palavra;
+	worker.parametros.palavras.palavras_len = tamanho_palavra;
+
+	prog_100( host, worker.parametros );
 }

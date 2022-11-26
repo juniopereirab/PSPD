@@ -9,6 +9,14 @@
 #define RPCGEN_VERSION	199506
 
 #include <rpc/rpc.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <float.h>
+#include <math.h>
+#include <string.h>
 
 
 struct params {

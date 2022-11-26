@@ -5,6 +5,14 @@
  */
 
 #include "contador.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <float.h>
+#include <math.h>
+#include <string.h>
 
 int words_quantity(const char sentence[ ])
 {
