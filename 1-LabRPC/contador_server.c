@@ -6,17 +6,66 @@
 
 #include "contador.h"
 
+int words_quantity(const char sentence[ ])
+{
+    int counted = 0; // result
+
+    // state:
+    const char* it = sentence;
+    int inword = 0;
+
+    do switch(*it) {
+        case '\0': 
+        case ' ': case '\t': case '\n': case '\r': // TODO others?
+            if (inword) { inword = 0; counted++; }
+            break;
+        default: inword = 1;
+    } while(*it++);
+
+    return counted;
+}
+
+int words_occurrences(char * str, char * toSearch)
+{
+    int i, j, found, count;
+    int stringLen, searchLen;
+
+    stringLen = strlen(str);      // length of string
+    searchLen = strlen(toSearch); // length of word to be searched
+
+    count = 0;
+
+    for(i=0; i <= stringLen-searchLen; i++)
+    {
+        /* Match word with string */
+        found = 1;
+        for(j=0; j<searchLen; j++)
+        {
+            if(str[i + j] != toSearch[j])
+            {
+                found = 0;
+                break;
+            }
+        }
+
+        if(found == 1)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 result *
 get_words_quantity_100(argp, rqstp)
 	params *argp;
 	struct svc_req *rqstp;
 {
-
 	static result  result;
 
-	/*
-	 * insert server code here
-	 */
+	result.cont = words_quantity(argp->dados.dados_val);
+	result.ocorrencias = words_occurrences(argp->dados.dados_val, argp->palavras.palavras_val);
 
 	return(&result);
 }
