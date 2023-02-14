@@ -2,3 +2,13 @@
 **/*.o
 .vscode
 .DS_Store
+bin
+main
+*.txt
+**/*.txt
+*.zip
+**/*.zip
+*.png
+**/*.png
+*.bmp
+**/*.bmp
