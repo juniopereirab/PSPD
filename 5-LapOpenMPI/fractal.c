@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define OUTFILE "out_julia_normal.bmp"
+#include <omp.h>
+#define OUTFILE "out_julia_normal_omp.bmp"
 
 int compute_julia_pixel(int x, int y, int largura, int altura, float tint_bias, unsigned char *rgb) {
   // Check coordinates
@@ -97,6 +98,7 @@ int main(int argc, char *argv[]) {
     rgb = calloc(3, sizeof(unsigned char));
     printf("Computando linhas de pixel %d até %d, para uma área total de %d\n", 0, n-1, area);
 
+    #pragma omp parallel for
     for (int i = 0; i < n; i++)
         for (int j = 0; j < largura*3; j+=3){
             compute_julia_pixel(j/3, i, largura, altura, 1.0, rgb);
