@@ -6,7 +6,7 @@
 
 void selection_sort(int *v, int n){
 	int i, j, min, tmp;
-
+	#pragma omp parallel for shared(v) private(j)
 	for(i = 0; i < n - 1; i++){
 		min = i;
 

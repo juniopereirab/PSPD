@@ -10,5 +10,5 @@ main
 **/*.zip
 *.png
 **/*.png
-*.bmp
-**/*.bmp
+*.dSYM
+**/*.dSYM
