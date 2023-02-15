@@ -157,10 +157,11 @@ int main(int argc, char *argv[]) {
     int chunk_size = altura / nprocs;
     int offset_area = chunk_size * largura * 3;
     int offset = meurank * offset_area + HEADER_SIZE;
+    printf("%d\n", offset);
 
     MPI_File_open(MPI_COMM_WORLD, OUTFILE, MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
     MPI_File_set_view(fh, offset, MPI_UNSIGNED_CHAR, MPI_UNSIGNED_CHAR, "native", MPI_INFO_NULL);
-    MPI_File_write_all(fh, pixel_receive + offset, subarea, MPI_UNSIGNED_CHAR, &status);
+    MPI_File_write_all(fh, pixel_receive + offset - HEADER_SIZE, subarea, MPI_UNSIGNED_CHAR, &status);
     MPI_File_close(&fh);
 
     if (meurank == 0) {
